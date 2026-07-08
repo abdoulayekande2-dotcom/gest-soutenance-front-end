@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import Layout from './components/Layout'
+import LayoutResponsable from './components/LayoutResponsable'
+import LayoutEtudiant from './components/LayoutEtudiant'
 import ProtectedRoute from './components/ProtectedRoute'
 import LoadingSpinner from './components/LoadingSpinner'
 
@@ -10,12 +12,14 @@ import AdminDashboard from './pages/admin/Dashboard'
 import AdminUsers from './pages/admin/Users'
 import AdminSalles from './pages/admin/Salles'
 import AdminAudit from './pages/admin/Audit'
+import PlanifierSoutenance from './pages/admin/PlanifierSoutenance'
 
 import SecretaireDashboard from './pages/secretaire/Dashboard'
 import Soutenances from './pages/secretaire/Soutenances'
 import SoutenanceDetail from './pages/secretaire/SoutenanceDetail'
 
 import EnseignantDashboard from './pages/enseignant/Dashboard'
+import MesSoutenances from './pages/enseignant/MesSoutenances'
 import MesJurys from './pages/enseignant/MesJurys'
 import Indisponibilites from './pages/enseignant/Indisponibilites'
 
@@ -62,6 +66,7 @@ export default function App() {
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/salles" element={<AdminSalles />} />
             <Route path="/admin/audit" element={<AdminAudit />} />
+            <Route path="/admin/planification" element={<PlanifierSoutenance />} />
           </Route>
 
           {/* Secrétaire */}
@@ -69,27 +74,37 @@ export default function App() {
             <Route path="/secretaire" element={<SecretaireDashboard />} />
             <Route path="/secretaire/soutenances" element={<Soutenances />} />
             <Route path="/secretaire/soutenances/:id" element={<SoutenanceDetail />} />
+            <Route path="/secretaire/planification" element={<PlanifierSoutenance />} />
           </Route>
 
           {/* Enseignant */}
           <Route element={<ProtectedRoute roles={['enseignant']} />}>
             <Route path="/enseignant" element={<EnseignantDashboard />} />
+            <Route path="/enseignant/soutenances" element={<MesSoutenances />} />
             <Route path="/enseignant/jury" element={<MesJurys />} />
             <Route path="/enseignant/indisponibilites" element={<Indisponibilites />} />
           </Route>
 
-          {/* Responsable */}
-          <Route element={<ProtectedRoute roles={['responsable_pedagogique']} />}>
-            <Route path="/responsable" element={<ResponsableDashboard />} />
-            <Route path="/responsable/pv" element={<ValidationPv />} />
-          </Route>
+        </Route>
+      </Route>
 
-          {/* Étudiant */}
-          <Route element={<ProtectedRoute roles={['etudiant']} />}>
+      {/* Étudiant — layout top-bar dédié */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute roles={['etudiant']} />}>
+          <Route element={<LayoutEtudiant />}>
             <Route path="/etudiant" element={<EtudiantDashboard />} />
             <Route path="/etudiant/soutenances" element={<EtudiantDashboard />} />
           </Route>
+        </Route>
+      </Route>
 
+      {/* Responsable — layout top-bar dédié */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute roles={['responsable_pedagogique']} />}>
+          <Route element={<LayoutResponsable />}>
+            <Route path="/responsable" element={<ResponsableDashboard />} />
+            <Route path="/responsable/pv" element={<ValidationPv />} />
+          </Route>
         </Route>
       </Route>
 
